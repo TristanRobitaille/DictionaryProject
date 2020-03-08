@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "node.h"
 
 struct dictNode *createNode(struct dictNode *parentPtr){
