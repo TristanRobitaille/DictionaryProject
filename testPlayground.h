@@ -1,3 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
-#include "node.c"
+#include "node.h"
+#include "translator.h"

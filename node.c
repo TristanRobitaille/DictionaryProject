@@ -3,8 +3,8 @@
 struct dictNode *createNode(struct dictNode *parentPtr){
 	/*! Allocates memory for a new node, passes in the address to the parent node in the BST and initializes balance factor at 0.
 	 * Returns NULL is allocation is unsuccessful, or pointer to new node is successful.
-	 *
 	 */
+
 	struct dictNode *newNode = malloc(sizeof(struct dictNode)); //Allocate memory for the node to be initialized
 
 	if (newNode == NULL){

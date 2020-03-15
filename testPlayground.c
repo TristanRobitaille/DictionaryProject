@@ -1,7 +1,4 @@
 #include "testPlayground.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 int main(){
 
@@ -40,5 +37,16 @@ int main(){
 	deleteNode(leftCchild);
 	deleteNode(rightCchild);
 
-	return 1;
+
+
+	//Translate a string and save it to char translated
+	char *stringToTranslate = "This is cool";
+	const int stringLen = 4; //Number of characters (including "\0" of string to translate)
+	char *filename = "translated.txt";
+	char *destLanguage = "es"; //Code for translation destination language. Follows ISO 639-1
+
+	char *translated = translate(stringToTranslate, stringLen, filename, destLanguage);
+	printf("Finally: %s\n", translated);
+
+	return 0;
 }

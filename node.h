@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 
 struct dictNode *createNode(struct dictNode *parentPtr);
 int deleteNode(struct dictNode *toBeDeleted);
