@@ -26,3 +26,7 @@ int deleteNode(struct dictNode *toBeDeleted){
 
 	return 1;
 }
+
+void insertNode(struct dictNode *node){
+
+}
