@@ -282,24 +282,22 @@ struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserte
 	if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) < 0)
 	        return rightRotate(root);
 
-	    // Right Right Case
-	    if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) > 0)
-	        return leftRotate(root);
+	// Right Right Case
+	if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) > 0)
+		return leftRotate(root);
 
-	    // Left Right Case
-	    if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) > 0)
-	    {
-	        root->leftChild =  leftRotate(root->leftChild);
-	        return rightRotate(root);
-	    }
+	// Left Right Case
+	if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) > 0)
+	{
+		root->leftChild =  leftRotate(root->leftChild);
+		return rightRotate(root);
+	}
 
-	    // Right Left Case
-	    if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) < 0);
-	    {
-	        root->rightChild = rightRotate(root->rightChild);
-	        return leftRotate(root);
-	    }
+	// Right Left Case
+	if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) < 0);
+	{
+		root->rightChild = rightRotate(root->rightChild);
+		return leftRotate(root);
+	}
 
 }
-
-
