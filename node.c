@@ -134,15 +134,15 @@ struct dictNode *delete(struct dictNode *tobeDeleted, struct dictNode *subroot){
 	return subroot;
 }
 
-struct Node * minValueNode(struct Node* node){
+struct dictNode * minValueNode(struct dictNode* node){
 	/*!The function gives the minimum valued node
 	 * return the node pointer
 	 */
-    struct Node* current = node;
+    struct dictNode* current = node;
 
     /* loop down to find the leftmost leaf */
-    while (current->left != NULL)
-        current = current->left;
+    while (current->leftChild != NULL)
+        current = current->leftChild;
 
     return current;
 }
