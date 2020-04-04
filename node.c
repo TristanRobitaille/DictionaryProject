@@ -1,4 +1,5 @@
 #include "node.h"
+#include <string.h>
 
 struct dictNode *createNode(struct dictNode *parentPtr){
 	/*! Allocates memory for a new node, passes in the address to the parent node in the BST and initializes balance factor at 0.
@@ -14,17 +15,136 @@ struct dictNode *createNode(struct dictNode *parentPtr){
 
 	newNode->parent = parentPtr; //Pass in the value of the node's parent
 	newNode->balanceFactor = 0; //Initialize balance factor at 0
+	newNode->height = 1;
 	return newNode;
 };
 
-int deleteNode(struct dictNode *toBeDeleted){
+struct dictNode* deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dict){
 	/*! Frees memory used by the node toBeDeleted
-	 * Returns 1 if deletion was successful
+	 * Returns the new root afte deletion
 	 */
+	if(tobeDeleted == NULL){
+		return NULL;
+	}
 
-	free(toBeDeleted);
+	else{
+		//check if the dictionary is empty
+		if(dict->root == NULL){
+			dict->root = NULL;
+		}
 
-	return 1;
+		else{
+			//check word ascii value
+			if(strcmp((tobeDeleted->word), (dict->root->word)) < 0){
+				dict->root = delete(tobeDeleted, dict->root->leftChild);
+			}
+			else if(strcmp((tobeDeleted->word), (dict->root->word)) > 0){
+				dict->root =  delete(tobeDeleted, dict->root->rightChild);
+			}
+			else{
+				//one child case
+				if((dict->root->leftChild == NULL) || (dict->root->rightChild == NULL)){
+				   struct Node *temp = dict->root->leftChild ? dict->root->leftChild : dict->root->rightChild;
+
+					// No child case
+					if (temp == NULL)
+					{
+						temp = dict->root;
+						dict->root = NULL;
+					}
+					else // One child case
+					 *(dict->root) = *temp; // Copy the contents of
+									// the non-empty child
+					free(temp);
+				}
+				//two child case
+				else{
+					// Get the inorder successor (smallest in the right subtree)
+					struct Node* temp = minValueNode(dict->root->rightChild);
+					struct Node* leftbranch = dict->root->leftChild;
+
+					// Copy the inorder successor's data to this node
+					*(dict->root) = *temp;
+
+					//retain its original leftbranch
+					dict->root->leftChild = leftbranch;
+
+					// Delete the inorder successor
+					dict->root->rightChild = delete(dict->root->rightChild, temp);
+					free(leftbranch);
+					//free(temp); not sure whether to free it here
+				}
+			}
+		}
+	}
+
+	return dict->root;
+}
+
+struct dictNode *delete(struct dictNode *tobeDeleted, struct dictNode *subroot){
+	/*!The recursive function takes the node going to be deleted, and the subroot of the tree
+	 * The subroot is being recursively changed
+	 * Return the new subroot
+	 */
+	if(strcmp((tobeDeleted->word), (subroot->word)) < 0){
+		subroot = delete(tobeDeleted, subroot->leftChild);
+	}
+	else if(strcmp((tobeDeleted->word), (subroot->word)) > 0){
+		subroot =  delete(tobeDeleted, subroot->rightChild);
+	}
+	else{
+		//one child case
+		if((subroot->leftChild == NULL) || (subroot->rightChild == NULL)){
+		   struct Node *temp = subroot->leftChild ? subroot->leftChild : subroot->rightChild;
+
+			// No child case
+			if (temp == NULL)
+			{
+				temp = subroot;
+				subroot = NULL;
+			}
+			else // One child case
+			 *(subroot) = *temp; // Copy the contents of
+							// the non-empty child
+			free(temp);
+		}
+		//two child case
+		else{
+			// Get the inorder successor (smallest in the right subtree)
+			struct Node* temp = minValueNode(subroot->rightChild);
+			struct Node* leftbranch = subroot->leftChild;
+
+			// Copy the inorder successor's data to this node
+			*(subroot) = *temp;
+
+			//retain its original leftbranch
+			subroot->leftChild = leftbranch;
+
+			// Delete the inorder successor
+			subroot->rightChild = delete(subroot->rightChild, temp);
+			free(leftbranch);
+			//free(temp); not sure whether to free it here
+		}
+	}
+	/*!update balance factor
+	 *rotate
+	 */
+	subroot = balanceTree(subroot, tobeDeleted);
+
+	return subroot;
+}
+
+struct Node * minValueNode(struct Node* node){
+	/*!The function gives the minimum valued node
+	 * return the node pointer
+	 */
+    struct Node* current = node;
+
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+
+    return current;
 }
 
 struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *dict){
@@ -47,34 +167,30 @@ struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *di
 
 		else{
 			//check word ascii value
-			if((tobeInserted->word) < (dict->root->word)){
-				tobeInserted = insert(tobeInserted, dict->root->leftChild);
+			if(strcmp((tobeInserted->word), (dict->root->word)) < 0){
+				dict->root = insert(tobeInserted, dict->root->leftChild);
 			}
-			else if((tobeInserted->word) > (dict->root->word)){
-				tobeInserted =  insert(tobeInserted, dict->root->leftChild);
+			else if(strcmp((tobeInserted->word), (dict->root->word)) > 0){
+				dict->root =  insert(tobeInserted, dict->root->rightChild);
 			}
 
+			//This is can be written as a separate function void append(struct dictNode *tobeInserted, sturct dictNode *subroot)
 			//if the word already exists in the dict
-			else if((tobeInserted->word) == (dict->root->word)){
+			else if(strcmp((tobeInserted->word), (dict->root->word)) == 0){
 				int originaldef = sizeof(dict->root->def);//original def size, unsure to use strlen or sizeof
 				dict->root->def = realloc(dict->root->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
 				dict->root->def + originaldef = tobeInserted->def;
 				int a = deleteNode(tobeInserted);//no need to assign a value if the function is changed to void
-				break;//not sure whether we need it
 			}
-
-			/*!update balance factor
-			 *rotate
-			 */
-			balanceTree(dict->root);
 		}
 	}
+	return dict->root;
 }
 
 struct dictNode *insert(struct dictNode *tobeInserted, struct dictNode *subroot){
 	/*!The recursive function takes the node going to be inserted, and the subroot of the tree
-	 *The subroot is being recursively changed
-	 *Undetermined return
+	 * The subroot is being recursively changed
+	 * Return the new subroot
 	 */
 	if(subroot == NULL){
 		subroot = tobeInserted;
@@ -82,24 +198,28 @@ struct dictNode *insert(struct dictNode *tobeInserted, struct dictNode *subroot)
 
 	else{
 		//check word ascii value
-		if((tobeInserted->word) < (subroot->word)){
-			return insert(tobeInserted, subroot->leftChild);
+		if(strcmp((tobeInserted->word), (subroot->word)) < 0){
+			subroot->leftChild = insert(tobeInserted, subroot->leftChild);
 		}
-		else if((tobeInserted->word) > (subroot->word)){
-			return insert(tobeInserted, subroot->leftChild);
+		else if(strcmp((tobeInserted->word), (subroot->word)) > 0){
+			subroot->rightChild = insert(tobeInserted, subroot->leftChild);
 		}
 
 		//if the word already exists in the dict
-		else if((tobeInserted->word) == (subroot->word)){
+		else if(strcmp((tobeInserted->word), (subroot->word)) == 0){
 			char *start = subroot->def;
 			int originaldef = sizeof(subroot->def);//or strlen, unsure
 			subroot->def = realloc(subroot->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
 			subroot->def + originaldef = tobeInserted->def;
 			int a = deleteNode(tobeInserted);//no need to assign a value if the function is changed to void
-			break;//not sure whether we need it
 		}
 	}
-	return tobeInserted;
+
+	/*!update balance factor
+	 *rotate
+	 */
+	subroot = balanceTree(subroot, tobeInserted);
+	return subroot;
 }
 
 int getHeight(struct dictNode *node){
@@ -112,7 +232,7 @@ int getBalance(struct dictNode *node){
 	if(node){
 		return 0;
 	}
-	return getHeight(node->left) - getHeight(node->right);
+	return getHeight(node->leftChild) - getHeight(node->rightChild);
 }
 
 
@@ -152,11 +272,34 @@ struct dictNode *leftRotate(struct dictNode *node){
 	return rightnode;
 }
 
-void balanceTree(struct dictNode *node){
-	int balance = getBalance(node);
+struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserted){
+	//update height
+	root->height = 1 + max(getHeight(root->leftChild), getHeight(root->rightChild));
+
+	int balance = getBalance(root);
 
 	//four cases
-}
+	if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) < 0)
+	        return rightRotate(root);
 
+	    // Right Right Case
+	    if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) > 0)
+	        return leftRotate(root);
+
+	    // Left Right Case
+	    if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) > 0)
+	    {
+	        root->leftChild =  leftRotate(root->leftChild);
+	        return rightRotate(root);
+	    }
+
+	    // Right Left Case
+	    if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) < 0);
+	    {
+	        root->rightChild = rightRotate(root->rightChild);
+	        return leftRotate(root);
+	    }
+
+}
 
 
