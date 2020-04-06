@@ -20,6 +20,7 @@ struct dictNode *createNode(struct dictNode *parentPtr){
 	return newNode;
 };
 
+
 struct dictNode* deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dict){
 	/*! Frees memory used by the node toBeDeleted
 	 * Returns the new root after deletion
@@ -175,12 +176,14 @@ struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *di
 				dict->root =  insert(tobeInserted, dict->root->rightChild);
 			}
 
-			//If the word already exists in the dict
-			//This can be written as a separate function void append(struct dictNode *tobeInserted, sturct dictNode *subroot)
+			//This is can be written as a separate function void append(struct dictNode *tobeInserted, sturct dictNode *subroot)
+			//if the word already exists in the dict
 			else if(strcmp((tobeInserted->word), (dict->root->word)) == 0){
-				int originaldef = sizeof(dict->root->def);//original def size, unsure to use strlen or sizeof
-				dict->root->def = realloc(dict->root->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
-				dict->root->def + originaldef = tobeInserted->def;
+				//static char *start = dict->root->def;
+				//int originaldef = sizeof(dict->root->def); //original def size, unsure to use strlen or sizeof
+				//dict->root->def = realloc(dict->root->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
+				//dict->root->def = dict->root->def + originaldef;
+				strcat(dict->root->def, tobeInserted->def); //update def
 				//free(tobeInserted);//no need to assign a value if the function is changed to void
 			}
 		}
@@ -209,9 +212,10 @@ struct dictNode *insert(struct dictNode *tobeInserted, struct dictNode *subroot)
 
 		//if the word already exists in the dict
 		else if(strcmp((tobeInserted->word), (subroot->word)) == 0){
-			int originaldef = sizeof(subroot->def);//or strlen, unsure
-			subroot->def = realloc(subroot->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
-			subroot->def + originaldef = tobeInserted->def;
+			//int originaldef = sizeof(subroot->def);//or strlen, unsure
+			//subroot->def = realloc(subroot->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
+			//*(subroot->def + originaldef) = tobeInserted->def;
+			strcat(subroot->def, tobeInserted->def);
 			//free(tobeInserted);//no need to assign a value if the function is changed to void
 		}
 	}
@@ -237,6 +241,16 @@ int getBalance(struct dictNode *node){
 }
 
 
+//Function Declaration
+int max(int a, int b);
+
+//Tried putting it to macro, but gives warning somehow
+int max(int a, int b)
+{
+    return (a > b)? a : b;
+}
+
+
 struct dictNode *rightRotate(struct dictNode *node){
 	/*!right rotate at node
 	 * update height
@@ -249,8 +263,8 @@ struct dictNode *rightRotate(struct dictNode *node){
 	leftnode->rightChild = node;
 	node->leftChild = temp;
 
-	node->height = max(getHeight(node->leftChild));
-	leftnode->height = max(getHeight(leftnode->leftChild));
+	node->height = max(getHeight(node->leftChild), getHeight(node->rightChild)) + 1;
+	leftnode->height = max(getHeight(leftnode->leftChild), getHeight(leftnode->rightChild)) + 1;
 
 	return leftnode;
 }
@@ -267,8 +281,8 @@ struct dictNode *leftRotate(struct dictNode *node){
 	rightnode->leftChild = node;
 	node->rightChild = temp;
 
-	node->height = max(getHeight(node->leftChild));
-	rightnode->height = max(getHeight(rightnode->leftChild));
+	node->height = max(getHeight(node->leftChild), getHeight(node->rightChild)) + 1;
+	rightnode->height = max(getHeight(rightnode->leftChild), getHeight(rightnode->rightChild)) + 1;
 
 	return rightnode;
 }
@@ -288,27 +302,20 @@ struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserte
 		return leftRotate(root);
 
 	// Left Right Case
-	if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) > 0)
-	{
+	if (balance > 1 && strcmp(tobeInserted->def, root->leftChild->def) > 0){
 		root->leftChild =  leftRotate(root->leftChild);
 		return rightRotate(root);
 	}
 
 	// Right Left Case
-	if ((balance < -1) && (strcmp(tobeInserted->def, root->rightChild->def) < 0));
-	{
+	if ((balance < -1) && (strcmp(tobeInserted->def, root->rightChild->def) < 0)){
 		root->rightChild = rightRotate(root->rightChild);
 		return leftRotate(root);
 	}
-
+	return NULL;
 }
 
-
 struct linkDict** createDict(){
-	/*!This function creates an array of pointers points at each linkDict node. 
-	 * Each linkedDict node contains a name(dictNode's first letter) of the AVL tree, and a pointer points to the root of the AVL tree
-	 *THe function returns the pointer of the array of pointers.
-	 */
 	struct linkDict **dict = calloc(26, sizeof(struct linkedDict *));
 
 	for(int i=0; i<26; i++){
@@ -321,10 +328,8 @@ struct linkDict** createDict(){
 }
 
 int findDict(struct dictNode* target){
-	/*Given a dictNode, the function finds which tree is the target belong
-	 *returns an integer representing the index of the tree in the pointer array
-	 */
 	return ((int)*(target->def) - 65);
 }
+
 
 
