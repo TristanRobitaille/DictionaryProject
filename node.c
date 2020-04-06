@@ -301,3 +301,20 @@ struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserte
 	}
 
 }
+
+struct linkDict** createDict(){
+	struct linkDict **dict = calloc(26, sizeof(struct linkDict *));
+
+	for(int i=0; i<26; i++){
+		dict[i] = malloc(sizeof(struct linkDict));
+		dict[i]->name = (char)i+65;
+		dict[i]->root = NULL;
+	}
+
+	return dict;
+}
+
+int findDict(struct dictNode* target){
+	return (int)*(target->def);
+}
+
