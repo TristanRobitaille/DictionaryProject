@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 struct dictNode *createNode(struct dictNode *parentPtr);
-struct dictNode *deleteNode(struct dictNode*, struct dictNode*);
+//struct dictNode *deleteNode(struct dictNode*, struct dictNode*);
 struct dictNode *insert(struct dictNode *, struct dictNode*);
 struct dictNode *delete(struct dictNode *, struct dictNode*);
 struct dictNode *minValueNode(struct dictNode* node);
