@@ -1,5 +1,6 @@
 #include "node.h"
 #include <string.h>
+#include <math.h>
 
 struct dictNode *createNode(struct dictNode *parentPtr){
 	/*! Allocates memory for a new node, passes in the address to the parent node in the BST and initializes balance factor at 0.
@@ -21,7 +22,7 @@ struct dictNode *createNode(struct dictNode *parentPtr){
 
 struct dictNode* deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dict){
 	/*! Frees memory used by the node toBeDeleted
-	 * Returns the new root afte deletion
+	 * Returns the new root after deletion
 	 */
 	if(tobeDeleted == NULL){
 		return NULL;
@@ -44,7 +45,7 @@ struct dictNode* deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 			else{
 				//one child case
 				if((dict->root->leftChild == NULL) || (dict->root->rightChild == NULL)){
-				   struct Node *temp = dict->root->leftChild ? dict->root->leftChild : dict->root->rightChild;
+				   struct dictNode *temp = dict->root->leftChild ? dict->root->leftChild : dict->root->rightChild;
 
 					// No child case
 					if (temp == NULL)
@@ -60,8 +61,8 @@ struct dictNode* deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 				//two child case
 				else{
 					// Get the inorder successor (smallest in the right subtree)
-					struct Node* temp = minValueNode(dict->root->rightChild);
-					struct Node* leftbranch = dict->root->leftChild;
+					struct dictNode* temp = minValueNode(dict->root->rightChild);
+					struct dictNode* leftbranch = dict->root->leftChild;
 
 					// Copy the inorder successor's data to this node
 					*(dict->root) = *temp;
@@ -95,7 +96,7 @@ struct dictNode *delete(struct dictNode *tobeDeleted, struct dictNode *subroot){
 	else{
 		//one child case
 		if((subroot->leftChild == NULL) || (subroot->rightChild == NULL)){
-		   struct Node *temp = subroot->leftChild ? subroot->leftChild : subroot->rightChild;
+		   struct dictNode *temp = subroot->leftChild ? subroot->leftChild : subroot->rightChild;
 
 			// No child case
 			if (temp == NULL)
@@ -111,8 +112,8 @@ struct dictNode *delete(struct dictNode *tobeDeleted, struct dictNode *subroot){
 		//two child case
 		else{
 			// Get the inorder successor (smallest in the right subtree)
-			struct Node* temp = minValueNode(subroot->rightChild);
-			struct Node* leftbranch = subroot->leftChild;
+			struct dictNode* temp = minValueNode(subroot->rightChild);
+			struct dictNode* leftbranch = subroot->leftChild;
 
 			// Copy the inorder successor's data to this node
 			*(subroot) = *temp;
@@ -174,16 +175,17 @@ struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *di
 				dict->root =  insert(tobeInserted, dict->root->rightChild);
 			}
 
-			//This is can be written as a separate function void append(struct dictNode *tobeInserted, sturct dictNode *subroot)
-			//if the word already exists in the dict
+			//If the word already exists in the dict
+			//This can be written as a separate function void append(struct dictNode *tobeInserted, sturct dictNode *subroot)
 			else if(strcmp((tobeInserted->word), (dict->root->word)) == 0){
 				int originaldef = sizeof(dict->root->def);//original def size, unsure to use strlen or sizeof
 				dict->root->def = realloc(dict->root->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
 				dict->root->def + originaldef = tobeInserted->def;
-				int a = deleteNode(tobeInserted);//no need to assign a value if the function is changed to void
+				//free(tobeInserted);//no need to assign a value if the function is changed to void
 			}
 		}
 	}
+	dict->size = dict->size + 1;
 	return dict->root;
 }
 
@@ -207,11 +209,10 @@ struct dictNode *insert(struct dictNode *tobeInserted, struct dictNode *subroot)
 
 		//if the word already exists in the dict
 		else if(strcmp((tobeInserted->word), (subroot->word)) == 0){
-			char *start = subroot->def;
 			int originaldef = sizeof(subroot->def);//or strlen, unsure
 			subroot->def = realloc(subroot->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
 			subroot->def + originaldef = tobeInserted->def;
-			int a = deleteNode(tobeInserted);//no need to assign a value if the function is changed to void
+			//free(tobeInserted);//no need to assign a value if the function is changed to void
 		}
 	}
 
@@ -248,8 +249,8 @@ struct dictNode *rightRotate(struct dictNode *node){
 	leftnode->rightChild = node;
 	node->leftChild = temp;
 
-	node->height = max(height(node->leftChild));
-	leftnode->height = max(height(leftnode->leftChild));
+	node->height = max(getHeight(node->leftChild));
+	leftnode->height = max(getHeight(leftnode->leftChild));
 
 	return leftnode;
 }
@@ -266,8 +267,8 @@ struct dictNode *leftRotate(struct dictNode *node){
 	rightnode->leftChild = node;
 	node->rightChild = temp;
 
-	node->height = max(height(node->leftChild));
-	rightnode->height = max(height(rightnode->leftChild));
+	node->height = max(getHeight(node->leftChild));
+	rightnode->height = max(getHeight(rightnode->leftChild));
 
 	return rightnode;
 }
@@ -294,7 +295,7 @@ struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserte
 	}
 
 	// Right Left Case
-	if (balance < -1 && strcmp(tobeInserted->def, root->rightChild->def) < 0);
+	if ((balance < -1) && (strcmp(tobeInserted->def, root->rightChild->def) < 0));
 	{
 		root->rightChild = rightRotate(root->rightChild);
 		return leftRotate(root);
@@ -317,4 +318,5 @@ struct linkDict** createDict(){
 int findDict(struct dictNode* target){
 	return (int)*(target->def);
 }
+
 
