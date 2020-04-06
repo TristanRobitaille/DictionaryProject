@@ -303,11 +303,16 @@ struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserte
 
 }
 
+
 struct linkDict** createDict(){
-	struct linkDict **dict = calloc(26, sizeof(struct linkDict *));
+	/*!This function creates an array of pointers points at each linkDict node. 
+	 * Each linkedDict node contains a name(dictNode's first letter) of the AVL tree, and a pointer points to the root of the AVL tree
+	 *THe function returns the pointer of the array of pointers.
+	 */
+	struct linkDict **dict = calloc(26, sizeof(struct linkedDict *));
 
 	for(int i=0; i<26; i++){
-		dict[i] = malloc(sizeof(struct linkDict));
+		dict[i] = malloc(sizeof(struct linkedDict));
 		dict[i]->name = (char)i+65;
 		dict[i]->root = NULL;
 	}
@@ -316,7 +321,10 @@ struct linkDict** createDict(){
 }
 
 int findDict(struct dictNode* target){
-	return (int)*(target->def);
+	/*Given a dictNode, the function finds which tree is the target belong
+	 *returns an integer representing the index of the tree in the pointer array
+	 */
+	return ((int)*(target->def) - 65);
 }
 
 
