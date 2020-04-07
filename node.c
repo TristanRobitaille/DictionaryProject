@@ -1,7 +1,8 @@
 #include "node.h"
-#include <string.h>
-#include <math.h>
 #include "dict.h"
+#include <string.h>
+#include <ctype.h>
+#include <math.h>
 
 struct dictNode *createNode(char *w, char *d){
 	/*! Allocates memory for a new node, passes in the address to the parent node in the BST and initializes balance factor at 0.
@@ -9,6 +10,8 @@ struct dictNode *createNode(char *w, char *d){
 	 */
 
 	struct dictNode *newNode = malloc(sizeof(struct dictNode)); //Allocate memory for the node to be initialized
+
+	*w = toupper(*w); //convert the first letter to uppercase
 
 	newNode->word = strdup(w);
 	newNode->def = strdup(d);
