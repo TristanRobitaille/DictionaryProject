@@ -1,22 +1,28 @@
 #include "node.h"
 #include <string.h>
 #include <math.h>
+#include "dict.h"
 
-struct dictNode *createNode(struct dictNode *parentPtr){
+struct dictNode *createNode(char *w, char *d){
 	/*! Allocates memory for a new node, passes in the address to the parent node in the BST and initializes balance factor at 0.
 	 * Returns NULL is allocation is unsuccessful, or pointer to new node is successful.
 	 */
 
 	struct dictNode *newNode = malloc(sizeof(struct dictNode)); //Allocate memory for the node to be initialized
 
-	if (newNode == NULL){
-		printf("Initialization of a new node has failed (malloc returned NULL).\n");
-		return NULL;
-	}
+	newNode->word = strdup(w);
+	newNode->def = strdup(d);
+	newNode->wordLength = strlen(w);
+	newNode->defLength = strlen(d);
 
-	newNode->parent = parentPtr; //Pass in the value of the node's parent
 	newNode->balanceFactor = 0; //Initialize balance factor at 0
-	newNode->height = 1;
+	newNode->height = 0;
+
+	newNode->wordTranslation = NULL;
+	newNode->leftChild = NULL;
+	newNode->rightChild = NULL;
+	newNode->nextWord = NULL;
+	newNode->previousWord = NULL;
 	return newNode;
 };
 
@@ -314,22 +320,5 @@ struct dictNode* balanceTree(struct dictNode *root, struct dictNode *tobeInserte
 	}
 	return NULL;
 }
-
-struct linkDict** createDict(){
-	struct linkDict **dict = calloc(26, sizeof(struct linkedDict *));
-
-	for(int i=0; i<26; i++){
-		dict[i] = malloc(sizeof(struct linkedDict));
-		dict[i]->name = (char)i+65;
-		dict[i]->root = NULL;
-	}
-
-	return dict;
-}
-
-int findDict(struct dictNode* target){
-	return ((int)*(target->def) - 65);
-}
-
 
 
