@@ -13,7 +13,9 @@
 
 //#define max(x,y) ((x>y)?x:y);
 
-
+int findDict(struct dictNode* target);
+struct linkedDict** createDict();
+char* getDef_Helper(struct dictNode* target, struct dictNode* subroot);
 
 //static const unsigned char alphabet [26] = {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z};
 
