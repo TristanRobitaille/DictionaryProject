@@ -28,7 +28,73 @@ struct dictNode {
 	struct dictNode *previousWord; //Pointer node of the previous word in alphabetical order
 	struct dictNode *nextWord; //Pointer node of the previous word in alphabetical order
 
-	struct dictNode *parent; //Address of the node's parent
+	struct dictNode *parent; //Address #include <stdlib.h>
+#include <stdio.h>
+
+//#define max(x,y) ((x>y)?x:y);
+
+
+struct dictNode *createNode(char *w, char *d);
+//struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *dict);
+//struct linkedDict *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dict)
+struct dictNode *insert(struct dictNode *, struct dictNode*);
+struct dictNode *delete(struct dictNode *, struct dictNode*);
+struct dictNode *minValueNode(struct dictNode* );
+struct dictNode *balanceTree(struct dictNode *, struct dictNode *);
+
+//static const unsigned char alphabet [26] = {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z};
+
+//Declare node struct
+struct dictNode {
+	/*! \struct
+	 * Smallest data structure, to be inserted in dictionary BST's (based on alphabetical order of word).
+	 * Contains all attributes that may be needed.
+	 * Must be initialized with *createNode(int *parentPtr), where *parentPtr is a pointer to the parent node (set to NULL if the node is the root)
+	 */
+
+	int balanceFactor; //Balance factor for AVL BST (+- 1 for AVL; initialize at 0)
+	int wordLength; //Length of the node's word char array (max. 2^16)
+	int defLength; //Length of the node's word's definition (max. 2^16)
+	int height; //the height of AVL tree at the node
+
+	char *word; //Pointer to the first char of the word
+	char *def; //Pointer to the first char of the word's English definition
+	char *wordTranslation; //Pointer to the first char of the word's translation (obtained from Google Translate Google API)
+
+	struct dictNode *previousWord; //Pointer node of the previous word in alphabetical order
+	struct dictNode *nextWord; //Pointer node of the previous word in alphabetical order
+
+	//struct dictNode *parent; //(Address of the node's parent) Recursive Code, no need for parent linkage
+	struct dictNode *leftChild; //Address of the node's left child
+	struct dictNode *rightChild; //Address of the node's right child
+};
+
+
+int findDict(struct dictNode* target);
+struct linkedDict** createDict();
+char* getDef_Helper(struct dictNode* target, struct dictNode* subroot);
+
+//static const unsigned char alphabet [26] = {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z};
+
+
+struct linkedDict {
+	/*! \struct
+	 * Biggest data structure, where each linked list node is a pointer to the root a AVL tree.
+	 * Contains all attributes that may be needed.
+	 * 2 options: either created priorily, or created as inserting
+	 */
+	int size; //Size of the dictionary, increment with each insert
+
+	char *name; //Name of the dictionary, abcdefg......
+	char *author;//Author of the dictionary
+
+	struct dictNode *root; //Pointer to the root of the AVL tree;
+};
+
+
+
+
+of the node's parent
 	struct dictNode *leftChild; //Address of the node's left child
 	struct dictNode *rightChild; //Address of the node's right child
 };
