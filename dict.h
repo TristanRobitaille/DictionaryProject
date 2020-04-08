@@ -10,12 +10,22 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "node.h"
+
 
 //#define max(x,y) ((x>y)?x:y);
 
+
+
 int findDict(struct dictNode* target);
 struct linkedDict** createDict();
+char* getDef(struct dictNode* target, struct linkedDict** dict);
 char* getDef_Helper(struct dictNode* target, struct dictNode* subroot);
+struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *dict);
+struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dict);
+int getSize(struct linkedDict* dict);
+char* getAuthor(struct linkedDict* dict);
+
 
 //static const unsigned char alphabet [26] = {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z};
 
@@ -33,7 +43,6 @@ struct linkedDict {
 
 	struct dictNode *root; //Pointer to the root of the AVL tree;
 };
-
 
 
 
