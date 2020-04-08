@@ -1,44 +1,64 @@
+/*
+ * testPlayground.c
+ *
+ *  Created on: Apr 7, 2020
+ *      Author: wtyte
+ */
 #include "testPlayground.h"
 
+
 int main(){
+	/*!A place to test all functions as it goes
+	 * Each comment block contains a specific types of operation test
+	 * Hope everything works
+	 */
+	//create dict
+	struct linkedDict **dict = createDict();
 
-	struct dictNode *parentNode = createNode(NULL);
-	struct dictNode *leftCchild = createNode(parentNode);
-	struct dictNode *rightCchild = createNode(parentNode);
+	//create node tristan
+	char w[] = "tristan";
+	char d[] = "Robitaille";
+	struct dictNode *n = createNode(w,d);
+	//printf("node word: %s\n", n->word);
+	//printf("node def: %s\n", n->def);
 
-	parentNode->word = "I am the parent";
-	leftCchild->word = "I am the left child";
-	rightCchild->word = "I am the right child";
+	//create node terry
+	char w2[] = "terry";
+	char d2[] = "Wu";
+	struct dictNode *m = createNode(w2, d2);
+	//printf("node word: %s\n", m->word);
+	//printf("node def: %s\n", m->def);
 
-	parentNode->leftChild = leftCchild;
-	parentNode->rightChild = leftCchild;
+	//create node tina
+	char w3[] = "tina";
+	char d3[] = "Zhang";
+	struct dictNode *k = createNode(w3, d3);
+	//printf("node word: %s\n", k->word);
+	//printf("node def: %s\n", k->def);
 
-	//Adding attributes to the parent node
-	parentNode->balanceFactor = 22;
-	parentNode->wordLength = 120;
-	parentNode->defLength = 1200;
+	//find tree index
+	int c = findDict(n);
+	//printf("Dict name: %s\n", dict[c]->name);
+	//printf("Dict index for n: %d\n", c);
 
-	parentNode->def = "My test word's definition";
-	parentNode->wordTranslation = "Mot de test";
+	//insert nodes
+	dict[c]->root = insertNode(n, dict[c]);
+	dict[c]->root = insertNode(m, dict[c]);
+	dict[c]->root = insertNode(k, dict[c]);
 
-	//Test
-	printf("What does the parent say: %s\n", parentNode->word);
-	printf("What does the left child say: %s\n", parentNode->leftChild->word);
-	printf("What does the right child say: %s\n", parentNode->rightChild->word);
+	//delete nodes
+	dict[c]->root = deleteNode(k, dict[c]);
 
-	printf("Balance factor: %d\n", parentNode->balanceFactor);
-	printf("Word length: %d\n", parentNode->wordLength);
-	printf("Definition length: %d\n", parentNode->defLength);
+	//get dict tree size
+	int tree_size = getSize(dict[c]);
+	printf("dict size with getSize function: %d\n", tree_size);
+	printf("dict size: %d\n", dict[c]->size);
 
-	printf("The actual definition: %s\n", parentNode->def);
-	printf("The translation: %s\n", parentNode->wordTranslation);
-
-	deleteNode(parentNode);
-	deleteNode(leftCchild);
-	deleteNode(rightCchild);
-
-
-
+	//get root of the tree
+	//to ensure balance tree & deletion works
+	printf("root word: %s", dict[c]->root->word);
+	
+	/*
 	//Translate a string and save it to char translated
 	char *stringToTranslate = "This is cool";
 	const int stringLen = 4; //Number of characters (including "\0" of string to translate)
@@ -46,7 +66,7 @@ int main(){
 	char *destLanguage = "es"; //Code for translation destination language. Follows ISO 639-1
 
 	char *translated = translate(stringToTranslate, stringLen, filename, destLanguage);
-	printf("Finally: %s\n", translated);
+	printf("Finally: %s\n", translated);*/
 
 	return 0;
 }
