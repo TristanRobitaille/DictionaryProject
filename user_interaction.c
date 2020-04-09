@@ -71,6 +71,7 @@ void print_subset(char *refWord, int targetLen, int numOutput, struct linkedDict
 	printf("The %d words closest to %s that are of length %d are:\n", numOutput, refWord, targetLen);
 
 	int predCnt = 0;
+	int sucCnt = 0;
 	struct dictNode *node = returnNode(dict[refWord[0] - 65]->root, refWord);
 
 	if (node == NULL){
@@ -78,79 +79,22 @@ void print_subset(char *refWord, int targetLen, int numOutput, struct linkedDict
 		return;
 	}
 
-	//BELOW IS NOT DONE - WE WANT TO USE PREVIOUSWORD AND NEXTWORD IN NODES TO CLIMB UP AND DOWN THE ALPHABET
+	node = node->previousWord; //First, look at the previous word
+	while (predCnt < numPredecessor && node != NULL){
+		if (strlen(node->word) == targetLen){ //If this word fits the length requirement, print it
+			printf("%s\n", node->word);
+			predCnt++;
+		}
+		node = node->previousWord; //Find the node for the previous word
+	}
 
-//	while (predCnt < numPredecessor){
-//		char *currWord = inorder_pred(node, NULL, refWord);
-//
-//		if (strlen(currWord) == targetLen){
-//			printf("%s\n", currWord);
-//			predCnt++;
-//		}
-//		node = returnNode(dict[refWord[0] - 65]->root, currWord);
-//	}
-//
-//	int sucCnt = 0;
-//	node = returnNode(dict[refWord[0] - 65]->root, refWord);
-//	while (sucCnt < numSuccessor){
-//
-//		char *currWord = inorder_suc(node, NULL, refWord);
-//
-//		if (strlen(currWord) == targetLen){
-//			printf("%s\n", currWord);
-//			sucCnt++;
-//		}
-//		node = returnNode(dict[refWord[0] - 65]->root, currWord);
-//	}
-
+	node = returnNode(dict[refWord[0] - 65]->root, refWord); //Now, look at the next word
+	node = node->nextWord;
+	while (sucCnt < numSuccessor && node != NULL){
+		if (strlen(node->word) == targetLen){ //If this word fits the length requirement, print it
+			printf("%s\n", node->word);
+			sucCnt++;
+		}
+		node = node->nextWord; //Find the node for the previous word
+	}
 }
-
-//char* inorder_pred(struct dictNode *node, struct dictNode *pre, char *refWord){
-//	//Base case
-//    if (node == NULL) return NULL;
-//
-//    //If word is present at root
-//    if (!strcmp(node->word, refWord)){
-//        // the maximum value in left subtree is predecessor
-//        if (node->leftChild != NULL){
-//        	struct dictNode *tmp = node->leftChild;
-//
-//            while (tmp->rightChild)
-//                tmp = tmp->rightChild;
-//            pre = tmp ;
-//        }
-//        return node->word;
-//    }
-//
-//    // If key is smaller than root's key, go to left subtree
-//    if(strcmp(refWord, node->word) > 0){
-//        pre = node ;
-//		printf("Current word predecessor: %s\n", pre->word);
-//        inorder_pred(node->rightChild, pre, refWord) ;
-//    }
-//}
-//
-//char* inorder_suc(struct dictNode *node, struct dictNode *suc, char *refWord){
-//	//Base case
-//    if (node == NULL) return NULL;
-//
-//    //If word is present at root
-//    if (!strcmp(node->word, refWord)){
-//        // the maximum value in left subtree is predecessor
-//        if (node->rightChild != NULL){
-//        	struct dictNode *tmp = node->rightChild;
-//
-//            while (tmp->leftChild)
-//                tmp = tmp->leftChild;
-//            suc = tmp ;
-//        }
-//        return node->word;
-//    }
-//
-//    // If key is smaller than root's key, go to left subtree
-//    if(strcmp(refWord, node->word) < 0){
-//        suc = node ;
-//		printf("Current word successor: %s\n", suc->word);
-//        inorder_pred(node->leftChild, suc, refWord) ;
-//    }
-//}

@@ -19,27 +19,37 @@ int main(){
 	char w[] = "Trist";
 	char d[] = "Robitaille";
 	struct dictNode *n = createNode(w,d);
+	n->previousWord = NULL;
 
 	//create node terry
 	char w2[] = "Terry";
 	char d2[] = "Wu";
 	struct dictNode *m = createNode(w2, d2);
+	m->previousWord = n;
+	n->nextWord = m;
 
 	//create node tina
 	char w3[] = "Treee";
 	char d3[] = "Zhang";
 	struct dictNode *k = createNode(w3, d3);
+	k->previousWord = m;
+	m->nextWord = k;
 
 	//create node tina
 	char w4[] = "Treas";
 	char d4[] = "Zhang";
 	struct dictNode *l = createNode(w4, d4);
+	l->previousWord = k;
+	k->nextWord = l;
 
 	//create node tina
 	char w5[] = "Troph";
 	char d5[] = "Zhang";
 	struct dictNode *p = createNode(w5, d5);
+	p->previousWord = l;
+	l->nextWord = p;
 
+	p->nextWord = NULL;
 
 	//find tree index
 	int c = findDict(n);

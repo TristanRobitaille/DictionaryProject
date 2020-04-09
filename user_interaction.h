@@ -9,5 +9,3 @@ void lev_traversal_printer(struct dictNode *node, char *refWord, int threshold);
 void print_words_same_start(char *refStart, struct linkedDict **dict);
 void words_same_start_traversal(struct dictNode *node, char *refStart);
 void print_subset(char *refWord, int targetLen, int numOutput, struct linkedDict **dict);
-char* inorder_pred(struct dictNode *node, struct dictNode *pre, char *refWord);
-char* inorder_suc(struct dictNode *node, struct dictNode *suc, char *refWord);
