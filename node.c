@@ -184,6 +184,16 @@ int getBalance(struct dictNode *node){
 	return getHeight(node->leftChild) - getHeight(node->rightChild);
 }
 
+struct dictNode *returnNode(struct dictNode *node, char *wordToFind){
+    if (node == NULL || !strcmp(node->word, wordToFind)) return node;
+
+    if(strcmp(wordToFind, node->word) < 0){
+		node = returnNode(node->leftChild, wordToFind);
+	}else if(strcmp(wordToFind, node->word) > 0){
+		node = returnNode(node->rightChild, wordToFind);
+	}
+    return node;
+}
 
 //Function Declaration
 int max(int a, int b);

@@ -25,10 +25,9 @@ struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *di
 struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dict);
 int getSize(struct linkedDict* dict);
 char* getAuthor(struct linkedDict* dict);
-
+int levenshtein(const char *strA, int lenA, const char *strB, int lenB);
 
 //static const unsigned char alphabet [26] = {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z};
-
 
 struct linkedDict {
 	/*! \struct

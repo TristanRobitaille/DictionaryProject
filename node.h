@@ -9,7 +9,7 @@ struct dictNode *insert(struct dictNode *, struct dictNode*);
 struct dictNode *delete(struct dictNode *, struct dictNode*);
 struct dictNode *minValueNode(struct dictNode* );
 struct dictNode *balanceTree(struct dictNode *, struct dictNode *);
-
+struct dictNode *returnNode(struct dictNode *node, char *wordToFind);
 
 //Declare node struct
 struct dictNode {

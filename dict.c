@@ -144,7 +144,6 @@ struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 }
 
 
-
 int findDict(struct dictNode* target){
 	//need to convert all word to uppercase when making the node
 	return ((int)*(target->word) - 65);
@@ -188,6 +187,32 @@ char* getDef_Helper(struct dictNode* target, struct dictNode* subroot){
 
 	printf("%s not found in dict.\n", target->word);
 	return NULL;
+}
+
+int levenshtein(const char *strA, int lenA, const char *strB, int lenB){
+	int a, b, c;
+
+	//If strings are empty, distance is num of characters of the other
+	if (!lenA) return lenB;
+	if (!lenB) return lenA;
+
+	//If last letters are the same, the difference is whatever is required to edit the rest of the strings
+	if (strA[lenA - 1] == strB[lenB - 1]) return levenshtein(strA, lenA - 1, strB, lenB - 1);
+
+	/*If last letters are not the same, try:
+	 *	changing last letter of s to that of t; or
+	 *  remove last letter of s; or
+	 *  remove last letter of t,
+	 * any of which is 1 edit plus editing the rest of the strings
+	 */
+	a = levenshtein(strA, lenA - 1, strB, lenB - 1);
+	b = levenshtein(strA, lenA, strB, lenB - 1);
+	c = levenshtein(strA, lenA - 1, strB, lenB);
+
+	if (a > b) a = b;
+	if (a > c) a = c;
+
+	return a + 1;
 }
 
 /*
