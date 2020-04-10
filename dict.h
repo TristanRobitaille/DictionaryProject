@@ -26,6 +26,8 @@ struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 int getSize(struct linkedDict* dict);
 char* getAuthor(struct linkedDict* dict);
 int levenshtein(const char *strA, int lenA, const char *strB, int lenB);
+void dummyLoad(struct linkedDict **dict);
+char* scroll(struct linkedDict* dict, char* target, char* direction);
 
 //static const unsigned char alphabet [26] = {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z};
 

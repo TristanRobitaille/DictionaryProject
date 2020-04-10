@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-char *translate(char *toTranslate, const int strLen, char *filename, char *destLang){
+void translate(char *toTranslate, const int strLen, char *filename, char *destLang){
 
 	//Concatenate strings to create the Python line to open/create a text file.
 	char strFile[256] = "f = open('"; //Max. filename length is 238 characters
@@ -35,12 +35,5 @@ char *translate(char *toTranslate, const int strLen, char *filename, char *destL
 	//Free memory allocated to Python program strings
 	free(strTranslation);
 	free(pythonTrans);
-
-	//Retrieve translated string
-	FILE *transFile = fopen(filename, "r");
-	char str[500 + strLen];
-	fgets(str, (500 + strLen), transFile);
-	fclose(transFile);
-
-	return str;
+	return;
 }

@@ -2,6 +2,8 @@
 #include <stdio.h>
 
 //#define max(x,y) ((x>y)?x:y);
+#ifndef NODE_H_
+#define NODE_H_
 
 
 struct dictNode *createNode(char *w, char *d);
@@ -36,8 +38,4 @@ struct dictNode {
 	struct dictNode *rightChild; //Address of the node's right child
 };
 
-
-
-
-
-
+#endif /* NODE_H_ */

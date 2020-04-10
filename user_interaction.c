@@ -68,11 +68,11 @@ void print_subset(char *refWord, int targetLen, int numOutput, struct linkedDict
 
 	int numPredecessor = floor(numOutput/2);
 	int numSuccessor = numOutput - numPredecessor;
-	printf("The %d words closest to %s that are of length %d are:\n", numOutput, refWord, targetLen);
+	printf("The closest words to %s that are of length %d are:\n", numOutput, targetLen);
 
 	int predCnt = 0;
 	int sucCnt = 0;
-	struct dictNode *node = returnNode(dict[refWord[0] - 65]->root, refWord);
+	struct dictNode *node = returnNode(dict[toupper(refWord[0]) - 65]->root, refWord);
 
 	if (node == NULL){
 		printf("Reference word could not be found\n");

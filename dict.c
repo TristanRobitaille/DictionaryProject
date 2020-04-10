@@ -7,13 +7,14 @@
 #include "dict.h"
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 
 
 struct linkedDict** createDict(){
 	struct linkedDict **dict = calloc(26, sizeof(struct linkedDict *));
 
-	for(int i=0; i<26; i++){
+	for(int i = 0; i < 26; i++){
 		dict[i] = malloc(sizeof(struct linkedDict));
 		dict[i]->name = malloc(sizeof(char));
 		*(dict[i]->name) = (char)(i+65);
@@ -67,7 +68,7 @@ struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *di
 	}
 	dict->size = dict->size + 1;
 	//r = dict->root;
-	printf("it returned: %s\n", dict->root->word);
+//	printf("it returned: %s\n", dict->root->word);
 	return dict->root;
 }
 
@@ -113,13 +114,13 @@ struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 				//two child case
 				else{
 					// Get the inorder successor (smallest in the right subtree)
-					printf("root right: %s\n", dict->root->rightChild->word);
+//					printf("root right: %s\n", dict->root->rightChild->word);
 
-					printf("here\n");
+//					printf("here\n");
 					struct dictNode* temp = minValueNode(dict->root->rightChild);
 					struct dictNode* leftbranch = dict->root->leftChild;
 					struct dictNode* rightbranch = dict->root->rightChild;
-					printf("root right: %s\n", dict->root->rightChild->word);
+//					printf("root right: %s\n", dict->root->rightChild->word);
 
 					// Copy the inorder successor's data to this node
 					*(dict->root) = *temp;
@@ -131,7 +132,7 @@ struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 					// Delete the inorder successor
 					dict->root->rightChild = delete(dict->root->rightChild, temp);
 
-					printf("out?");
+//					printf("out?");
 					free(leftbranch);
 					//free(temp); not sure whether to free it here
 				}
@@ -146,7 +147,7 @@ struct dictNode *deleteNode(struct dictNode *tobeDeleted, struct linkedDict *dic
 
 int findDict(struct dictNode* target){
 	//need to convert all word to uppercase when making the node
-	return ((int)*(target->word) - 65);
+	return toupper(target->word[0]) - 65;
 }
 
 int getSize(struct linkedDict* dict){
@@ -170,7 +171,7 @@ char* getDef(struct dictNode* target, struct linkedDict** dict){
 		return getDef_Helper(target, dict[c]->root->rightChild);
 	}
 
-	printf("%s not found in dict.\n", target->word);
+//	printf("%s not found in dict.\n", target->word);
 	return NULL;
 }
 
@@ -185,7 +186,7 @@ char* getDef_Helper(struct dictNode* target, struct dictNode* subroot){
 		return getDef_Helper(target, subroot->rightChild);
 	}
 
-	printf("%s not found in dict.\n", target->word);
+//	printf("%s not found in dict.\n", target->word);
 	return NULL;
 }
 
@@ -222,5 +223,58 @@ struct linkedDict* loadTree_fromFile(char* filename){
 	fclose(fptr);
 }*/
 
+char* scroll(struct linkedDict* dict, char* target, char* direction){
+	struct dictNode *node = returnNode(dict->root, target);
 
+	if(strcmp(direction, "up") == 0) return node->previousWord->word;
+	else if(strcmp(direction, "down") == 0) return node->nextWord->word;
+	return target;
+}
+
+void dummyLoad(struct linkedDict **dict){
+	char w[] = "Trist\0";
+	char d[] = "Robitaille\0";
+	struct dictNode *n = createNode(w,d);
+	n->previousWord = NULL;
+
+	//create node terry
+	char w2[] = "Terry\0";
+	char d2[] = "Wu\0";
+	struct dictNode *m = createNode(w2, d2);
+	m->previousWord = n;
+	n->nextWord = m;
+
+	//create node tina
+	char w3[] = "Treee\0";
+	char d3[] = "Zhang\0";
+	struct dictNode *k = createNode(w3, d3);
+	k->previousWord = m;
+	m->nextWord = k;
+
+	//create node tina
+	char w4[] = "Treas\0";
+	char d4[] = "Zhang\0";
+	struct dictNode *l = createNode(w4, d4);
+	l->previousWord = k;
+	k->nextWord = l;
+
+	//create node tina
+	char w5[] = "Troph\0";
+	char d5[] = "Zhang\0";
+	struct dictNode *p = createNode(w5, d5);
+	p->previousWord = l;
+	l->nextWord = p;
+
+	p->nextWord = NULL;
+
+	//find tree index
+	int c = findDict(n);
+
+	//insert nodes
+	dict[c]->root = insertNode(n, dict[c]);
+	dict[c]->root = insertNode(m, dict[c]);
+	dict[c]->root = insertNode(k, dict[c]);
+	dict[c]->root = insertNode(l, dict[c]);
+	dict[c]->root = insertNode(p, dict[c]);
+}
 

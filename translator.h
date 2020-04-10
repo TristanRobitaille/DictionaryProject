@@ -3,4 +3,4 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-char *translate(char*, const int, char*, char*);
+void translate(char*, const int, char*, char*);

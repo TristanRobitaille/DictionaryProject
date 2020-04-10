@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 #include "dict.h"
 
 void print_lev(char *refWord, int threshold, struct linkedDict **dict);

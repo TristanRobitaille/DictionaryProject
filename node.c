@@ -30,7 +30,6 @@ struct dictNode *createNode(char *w, char *d){
 };
 
 
-
 struct dictNode *createNode_fromFile(char *w, char *d, struct dictNode *pw, struct dictNode *nw){
 	/*! Allocates memory for a new node, passes in the address to the parent node in the BST and initializes balance factor at 0.
 	 * Returns NULL is allocation is unsuccessful, or pointer to new node is successful.
@@ -63,8 +62,8 @@ struct dictNode *delete(struct dictNode *subroot, struct dictNode *tobeDeleted){
 	 * The subroot is being recursively changed
 	 * Return the new subroot
 	 */
-	printf("location: %s\n", subroot->word);
-	printf("Being deleted: %s\n", tobeDeleted->word);
+//	printf("location: %s\n", subroot->word);
+//	printf("Being deleted: %s\n", tobeDeleted->word);
 	if(strcmp((tobeDeleted->word), (subroot->word)) < 0){
 		subroot = delete(tobeDeleted, subroot->leftChild);
 	}
@@ -134,7 +133,7 @@ struct dictNode *insert(struct dictNode *tobeInserted, struct dictNode *subroot)
 	 * The subroot is being recursively changed
 	 * Return the new subroot
 	 */
-	printf("tobeinserted: %s\n", tobeInserted->word);
+//	printf("tobeinserted: %s\n", tobeInserted->word);
 	if(subroot == NULL){
 		subroot = malloc(sizeof(struct dictNode));
 		subroot = tobeInserted;
@@ -163,7 +162,7 @@ struct dictNode *insert(struct dictNode *tobeInserted, struct dictNode *subroot)
 	 *rotate
 	 */
 	subroot = balanceTree(subroot, tobeInserted);
-	printf("return subroot: %s\n", subroot->word);
+//	printf("return subroot: %s\n", subroot->word);
 	return subroot;
 }
 
@@ -184,6 +183,7 @@ int getBalance(struct dictNode *node){
 	return getHeight(node->leftChild) - getHeight(node->rightChild);
 }
 
+
 struct dictNode *returnNode(struct dictNode *node, char *wordToFind){
     if (node == NULL || !strcmp(node->word, wordToFind)) return node;
 
@@ -192,6 +192,7 @@ struct dictNode *returnNode(struct dictNode *node, char *wordToFind){
 	}else if(strcmp(wordToFind, node->word) > 0){
 		node = returnNode(node->rightChild, wordToFind);
 	}
+//    printf("returning: %s\n", node->word);
     return node;
 }
 
@@ -210,7 +211,7 @@ struct dictNode *rightRotate(struct dictNode *node){
 	 * update height
 	 * return the new subroot
 	 */
-	printf("right rotate");
+//	printf("right rotate");
 	struct dictNode *leftnode = node->leftChild;
 	struct dictNode *temp = leftnode->rightChild;
 
@@ -230,7 +231,7 @@ struct dictNode *leftRotate(struct dictNode *node){
 	 * update height
 	 * return the new subroot
 	 */
-	printf("left rotate");
+//	printf("left rotate");
 	struct dictNode *rightnode = node->rightChild;
 	struct dictNode *temp = rightnode->leftChild;
 
