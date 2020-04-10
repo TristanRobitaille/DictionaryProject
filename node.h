@@ -12,6 +12,7 @@ struct dictNode *delete(struct dictNode *, struct dictNode*);
 struct dictNode *minValueNode(struct dictNode* );
 struct dictNode *balanceTree(struct dictNode *, struct dictNode *);
 struct dictNode *returnNode(struct dictNode *node, char *wordToFind);
+struct dictNode *createNode_fromFile(char *w, char *d, struct dictNode *pw, struct dictNode *nw);
 
 //Declare node struct
 struct dictNode {

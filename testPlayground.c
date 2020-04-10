@@ -13,9 +13,10 @@ int main(){
 	 * Hope everything works
 	 */
 	//create dict
-	struct linkedDict **dict = createDict();
+//	struct linkedDict **dict = createDict();
 
-	dummyLoad(dict);
+	struct linkedDict **dict = createDict();
+	loadTree_fromFile("data/test.txt", dict);
 //	char w[] = "Trist/0";
 //	char d[] = "Robitaille/0";
 //	struct dictNode *n = createNode(w,d);

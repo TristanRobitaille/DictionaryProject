@@ -53,16 +53,6 @@ struct dictNode *insertNode(struct dictNode *tobeInserted, struct linkedDict *di
 				dict->root->rightChild =  insert(tobeInserted, dict->root->rightChild);
 			}
 
-			//This is can be written as a separate function void append(struct dictNode *tobeInserted, sturct dictNode *subroot)
-			//if the word already exists in the dict
-			else if(strcmp((tobeInserted->word), (dict->root->word)) == 0){
-				//static char *start = dict->root->def;
-				//int originaldef = sizeof(dict->root->def); //original def size, unsure to use strlen or sizeof
-				//dict->root->def = realloc(dict->root->def, (originaldef + sizeof(tobeInserted->def)) * sizeof(char));//sizeof or strlen?
-				//dict->root->def = dict->root->def + originaldef;
-				strcat(dict->root->def, tobeInserted->def); //update def
-				//free(tobeInserted);//no need to assign a value if the function is changed to void
-			}
 			dict->root = balanceTree(dict->root, tobeInserted);
 		}
 	}
@@ -216,12 +206,115 @@ int levenshtein(const char *strA, int lenA, const char *strB, int lenB){
 	return a + 1;
 }
 
-/*
-struct linkedDict* loadTree_fromFile(char* filename){
+struct linkedDict** loadTree_fromFile(char* filename, struct linkedDict** dict){
 	FILE *fptr = fopen(filename, "r");
 
+	char line[10000];
+	struct dictNode *prevNode = NULL;
+
+	while(fgets(line, sizeof(line), fptr) != NULL) { //Read every line until empty
+	    char *token, *word, *definition;
+	    if (line[0] == '"') line[0] = ' ';
+
+		token = strtok(line, " "); //Extract word
+		word = token;
+
+		token = strtok(NULL, ")"); //Extract definition
+		token = strtok(NULL, "");
+		definition = token;
+		word[strcspn(word, "\n")] = 0; //Remove newline character
+		definition[strcspn(definition, "\n")] = 0; //Remove newline character
+
+		struct dictNode *newNode = createNode(word, definition);
+		if (prevNode != NULL) prevNode->nextWord = newNode;
+		newNode->previousWord = prevNode;
+		prevNode = newNode;
+		insertNode(newNode, dict[0]);
+//		printf("Inserted: %s\n", newNode->word);
+		fgets(line, sizeof(line), fptr);
+		struct dictNode *prevNode = newNode;
+	}
+
 	fclose(fptr);
-}*/
+	return dict;
+}
+
+//struct linkedDict** loadTree_fromFile(char* filename, struct linkedDict** dict){
+//	FILE *fptr = fopen(filename, "r");
+//
+//	//struct linkedDict **dict = calloc(26, sizeof(struct linkedDict*));
+//    char *Array[10000000][10000000];
+//    char line[10000];
+//    char *w;
+//    char *d;
+//    char *exit;
+//    int i, j;
+//
+//    i = 0;
+//    while(fgets(line, sizeof(line), fptr))
+//    {
+//        j = 0;
+//        w = strtok(line, "(");  // initialize line tokens
+//        if(w){  // won't enter if the line is empty, and stops when no more tokens
+//            Array[i][j] = strdup(w);
+//            //printf("printword: %s", Array[i][j]);
+//            j = j + strlen(w);
+//            d = strtok(NULL, "(");  // next token
+//            Array[i][j] = strdup(d);
+//            exit = strtok(NULL, "(");
+//            fgets(line, sizeof(line), fptr);
+//        }
+//        printf("\n");
+//        i++;
+//    }
+//
+//    int count = i;
+//    i = j = 0;
+//	int c = (int)*w - 65;
+//
+//	while(i < count){
+//		struct dictNode *temp;
+//		w = Array[i][j];
+//		d = Array[i][j + strlen(w)];
+//
+//		if(i < 1){
+//			temp = createNode_fromFile(w, d, NULL, NULL);
+//			dict[c]->root = insertNode(temp, dict[c]);
+//			printf("dict[c] root: %s\n", dict[c]->root->word);
+//			//printf("Then\n");
+//		}
+//		else{
+//			//printf("here\n");
+//			j = 0;
+//			char *pword = Array[i-1][j];
+//			printf("pword: %s\n", pword);
+//			char *nword = Array[i+1][j];
+//			printf("nword: %s\n", nword);
+//
+//			//printf("here?\n");
+//			struct dictNode* pw = NULL;
+//			struct dictNode* nw = NULL;
+//			printf("dict[c] root: %s\n", dict[c]->root->word);
+//
+//			if (pword){
+//				pw = returnNode(dict[c]->root, pword);
+//			}
+//			if (nword){
+//				nw = returnNode(dict[c]->root, nword);
+//			}
+//			//printf("here??\n");
+//			temp = createNode_fromFile(w, d, pw, nw);
+//			//printf("here???\n");
+//			dict[c]->root = insertNode(temp, dict[c]);
+//		}
+//		i++;
+//		j = 0;
+//	}
+//	fclose(fptr);
+//
+//	return dict;
+//}
+
 
 char* scroll(struct linkedDict* dict, char* target, char* direction){
 	struct dictNode *node = returnNode(dict->root, target);
@@ -232,49 +325,87 @@ char* scroll(struct linkedDict* dict, char* target, char* direction){
 }
 
 void dummyLoad(struct linkedDict **dict){
-	char w[] = "Trist\0";
-	char d[] = "Robitaille\0";
+	char w[] = "Cable\0";
+	char d[] = "A rope of steel wire, or copper wire, usually covered with some protecting or insulating substance; as, the cable of a suspension bridge; a telegraphic cable.";
 	struct dictNode *n = createNode(w,d);
 	n->previousWord = NULL;
 
 	//create node terry
-	char w2[] = "Terry\0";
-	char d2[] = "Wu\0";
+	char w2[] = "Cabled\0";
+	char d2[] = "Fastened with, or attached to, a cable or rope.";
 	struct dictNode *m = createNode(w2, d2);
 	m->previousWord = n;
 	n->nextWord = m;
 
 	//create node tina
-	char w3[] = "Treee\0";
-	char d3[] = "Zhang\0";
+	char w3[] = "Cablegram\0";
+	char d3[] = "A message sent by a submarine telegraphic cable.";
 	struct dictNode *k = createNode(w3, d3);
 	k->previousWord = m;
 	m->nextWord = k;
 
 	//create node tina
-	char w4[] = "Treas\0";
-	char d4[] = "Zhang\0";
+	char w4[] = "Cablelaid\0";
+	char d4[] = "Composed of three three-stranded ropes, or hawsers, twisted together to form a cable.";
 	struct dictNode *l = createNode(w4, d4);
 	l->previousWord = k;
 	k->nextWord = l;
 
 	//create node tina
-	char w5[] = "Troph\0";
-	char d5[] = "Zhang\0";
+	char w5[] = "Cablet\0";
+	char d5[] = "A little cable less than ten inches in circumference.";
 	struct dictNode *p = createNode(w5, d5);
 	p->previousWord = l;
 	l->nextWord = p;
 
+	//create node tina
+	char w6[] = "Cabling\0";
+	char d6[] = "The decoration of a fluted shaft of a column or of a pilaster with reeds, or rounded moldings, which seem to be laid in the hollows of the fluting. These are limited in length to about one third of the height of the shaft.";
+	struct dictNode *a = createNode(w6, d6);
+	a->previousWord = p;
+	p->nextWord = a;
+
+	//create node tina
+	char w7[] = "Cabmen\0";
+	char d7[] = "Plural of cabman.";
+	struct dictNode *b = createNode(w7, d7);
+	b->previousWord = a;
+	a->nextWord = b;
+
+	//create node tina
+	char w8[] = "Cabman\0";
+	char d8[] = "The driver of a cab.";
+	struct dictNode *c = createNode(w8, d8);
+	c->previousWord = b;
+	b->nextWord = c;
+
+	//create node tina
+	char w9[] = "Cabob\0";
+	char d9[] = "A small piece of mutton or other meat roasted on a skewer; -- so called in Turkey and Persia.";
+	struct dictNode *f = createNode(w9, d9);
+	f->previousWord = c;
+	c->nextWord = f;
+
+	//create node tina
+	char w10[] = "Caboched\0";
+	char d10[] = "Showing the full face, but nothing of the neck; -- said of the head of a beast in armorial bearing.";
+	struct dictNode *e = createNode(w10, d10);
+	e->previousWord = f;
 	p->nextWord = NULL;
 
 	//find tree index
-	int c = findDict(n);
+	int qw = findDict(n);
 
 	//insert nodes
-	dict[c]->root = insertNode(n, dict[c]);
-	dict[c]->root = insertNode(m, dict[c]);
-	dict[c]->root = insertNode(k, dict[c]);
-	dict[c]->root = insertNode(l, dict[c]);
-	dict[c]->root = insertNode(p, dict[c]);
+	dict[qw]->root = insertNode(n, dict[qw]);
+	dict[qw]->root = insertNode(m, dict[qw]);
+	dict[qw]->root = insertNode(k, dict[qw]);
+	dict[qw]->root = insertNode(l, dict[qw]);
+	dict[qw]->root = insertNode(p, dict[qw]);
+	dict[qw]->root = insertNode(a, dict[qw]);
+	dict[qw]->root = insertNode(b, dict[qw]);
+	dict[qw]->root = insertNode(c, dict[qw]);
+	dict[qw]->root = insertNode(f, dict[qw]);
+	dict[qw]->root = insertNode(e, dict[qw]);
 }
 

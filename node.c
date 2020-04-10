@@ -185,15 +185,23 @@ int getBalance(struct dictNode *node){
 
 
 struct dictNode *returnNode(struct dictNode *node, char *wordToFind){
-    if (node == NULL || !strcmp(node->word, wordToFind)) return node;
+	if (node == NULL || !strcmp(node->word, wordToFind)) return node;
 
-    if(strcmp(wordToFind, node->word) < 0){
-		node = returnNode(node->leftChild, wordToFind);
-	}else if(strcmp(wordToFind, node->word) > 0){
-		node = returnNode(node->rightChild, wordToFind);
+//	printf("Word: %s\n", node->word);
+
+	while (node != NULL ) {
+		if (strcmp(wordToFind, node->word) < 0 ) {
+			node = node->leftChild;
+
+		} else if(strcmp(wordToFind, node->word) > 0 ) {
+			node = node->rightChild;
+
+		} else if(strcmp(wordToFind, node->word) == 0 ) {
+			return node;
+		}
 	}
 //    printf("returning: %s\n", node->word);
-    return node;
+    return NULL;
 }
 
 //Function Declaration
